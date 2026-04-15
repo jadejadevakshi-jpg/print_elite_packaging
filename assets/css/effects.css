@@ -1,0 +1,341 @@
+/* Advanced motion & atmosphere — Elite Print */
+
+@property --mesh-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+
+/* Animated mesh background on main pages */
+body.has-mesh::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at var(--mesh-x) 0%, rgba(201, 162, 39, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(201, 162, 39, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  animation: meshDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes meshDrift {
+  0% {
+    --mesh-x: 35%;
+  }
+  100% {
+    --mesh-x: 65%;
+  }
+}
+
+/* Fallback for browsers without @property */
+@supports not (background: paint(worklet)) {
+  body.has-mesh::before {
+    animation: meshDriftLegacy 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes meshDriftLegacy {
+    0% {
+      opacity: 1;
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      opacity: 0.92;
+      filter: hue-rotate(12deg);
+    }
+  }
+}
+
+/* Logo splash intro — visible ~2.5s then exits */
+.logo-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(201, 162, 39, 0.12) 0%, transparent 45%),
+    linear-gradient(165deg, #0d0d0d 0%, #050505 100%);
+  animation: splashSequence 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.logo-splash__glow {
+  position: absolute;
+  width: min(90vw, 420px);
+  height: min(90vw, 420px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 197, 71, 0.25) 0%, transparent 70%);
+  animation: glowPulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.logo-splash__content {
+  position: relative;
+  text-align: center;
+  animation: logoPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes logoPop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.logo-splash__content img {
+  width: min(160px, 42vw);
+  height: auto;
+  margin-inline: auto;
+  filter: drop-shadow(0 12px 40px rgba(201, 162, 39, 0.45));
+}
+
+.logo-splash__name {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fff 0%, var(--gold-bright) 50%, #fff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes splashSequence {
+  0%,
+  72% {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  88% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+body.splash-lock {
+  overflow: hidden;
+}
+
+/* Product cards — shine sweep */
+.product-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card--fx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s var(--ease);
+  pointer-events: none;
+}
+
+.product-card--fx:hover::after {
+  transform: translateX(100%);
+}
+
+/* Service icons — gentle float */
+.service-item--fx {
+  animation: iconFloat 5s ease-in-out infinite;
+}
+
+.service-item--fx:nth-child(2) {
+  animation-delay: -1s;
+}
+
+.service-item--fx:nth-child(3) {
+  animation-delay: -2s;
+}
+
+.service-item--fx:nth-child(4) {
+  animation-delay: -3s;
+}
+
+.service-item--fx:nth-child(5) {
+  animation-delay: -4s;
+}
+
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Pouch rows — image zoom on hover */
+.pouch-row__media--fx {
+  overflow: hidden;
+}
+
+.pouch-row__media--fx img {
+  transition: transform 0.7s var(--ease);
+}
+
+.pouch-row__media--fx:hover img {
+  transform: scale(1.05);
+}
+
+/* Client logos — subtle pulse border */
+.client-logo--fx {
+  position: relative;
+}
+
+.client-logo--fx::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 4px;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--gold), transparent, var(--gold-bright));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.client-logo--fx:hover::before {
+  opacity: 1;
+}
+
+/* Hero — Ken Burns on background */
+.hero__bg--fx {
+  animation: heroKen 28s ease-in-out infinite alternate;
+}
+
+@keyframes heroKen {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.08) translate(-1%, -1%);
+  }
+}
+
+/* Login page ambient orbs */
+.login-page--fx::before,
+.login-page--fx::after {
+  content: "";
+  position: fixed;
+  width: 40vmax;
+  height: 40vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.login-page--fx::before {
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.5) 0%, transparent 70%);
+  top: -10%;
+  right: -10%;
+  animation: orbMove 12s ease-in-out infinite alternate;
+}
+
+.login-page--fx::after {
+  background: radial-gradient(circle, rgba(80, 80, 120, 0.35) 0%, transparent 70%);
+  bottom: -15%;
+  left: -10%;
+  animation: orbMove 14s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes orbMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(8%, 6%);
+  }
+}
+
+/* Page transition feel */
+main.page-fade {
+  animation: pageIn 0.65s var(--ease) both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.has-mesh::before {
+    animation: none;
+  }
+
+  .logo-splash {
+    animation: splashReduced 0.4s ease forwards;
+  }
+
+  @keyframes splashReduced {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  .logo-splash__glow,
+  .logo-splash__content,
+  .logo-splash__name {
+    animation: none;
+  }
+
+  .product-card--fx::after,
+  .service-item--fx,
+  .hero__bg--fx,
+  main.page-fade,
+  .login-page--fx::before,
+  .login-page--fx::after {
+    animation: none !important;
+  }
+}
