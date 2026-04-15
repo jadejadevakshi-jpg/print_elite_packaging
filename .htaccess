@@ -1,0 +1,32 @@
+Options -Indexes
+
+# If mod_rewrite is enabled, prefer PHP pages
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteRule ^$ index.php [L]
+  RewriteRule ^index\.html$ index.php [L,R=302]
+  RewriteRule ^about\.html$ about.php [L,R=302]
+  RewriteRule ^products\.html$ products.php [L,R=302]
+  RewriteRule ^clients\.html$ clients.php [L,R=302]
+  RewriteRule ^faq\.html$ faq.php [L,R=302]
+  RewriteRule ^contact\.html$ contact.php [L,R=302]
+</IfModule>
+
+# Block direct access to sensitive folders/files
+<IfModule mod_authz_core.c>
+  <FilesMatch "(?i)\.(sql|ini|env)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+  <FilesMatch "(?i)\.(sql|ini|env)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>
+
+# Deny browsing internal folders
+RedirectMatch 403 (?i)^/project/(database|config)/.*
+
